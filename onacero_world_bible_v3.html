@@ -1,0 +1,700 @@
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,400&family=DM+Serif+Display:ital@0;1&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--ink:#0a0a0a;--page:#ffffff;--off:#f5f4f1;--rule:#e0ddd8;--muted:#6b6763;--faint:#c8c5c0;}
+body{background:var(--page);color:var(--ink);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.6;}
+
+/* PASSWORD GATE */
+#gate{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px 20px;}
+#deck-wrap{display:none;}
+.gate-inner{text-align:center;max-width:360px;width:100%;}
+.gate-logo{margin-bottom:28px;display:flex;justify-content:center;}
+.gate-logo svg{width:64px;height:auto;}
+.gate-title{font-family:'Bebas Neue',sans-serif;font-size:52px;line-height:.9;margin-bottom:6px;}
+.gate-sub{font-family:'DM Serif Display',serif;font-style:italic;font-size:16px;color:var(--muted);margin-bottom:32px;}
+.gate-rule{width:32px;height:2px;background:var(--ink);margin:0 auto 28px;}
+.gate-label{font-size:10px;letter-spacing:.16em;text-transform:uppercase;font-weight:600;color:var(--muted);margin-bottom:10px;display:block;}
+.gate-input{width:100%;border:1.5px solid var(--rule);border-radius:3px;padding:12px 16px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--ink);background:var(--page);outline:none;text-align:center;letter-spacing:.12em;transition:border-color .15s;}
+.gate-input:focus{border-color:var(--ink);}
+.gate-input::placeholder{color:var(--faint);letter-spacing:.04em;}
+.gate-btn{margin-top:14px;width:100%;background:var(--ink);color:#fff;border:none;border-radius:3px;padding:13px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:opacity .15s;}
+.gate-btn:hover{opacity:.85;}
+.gate-err{margin-top:12px;font-size:11px;color:#c0392b;letter-spacing:.06em;min-height:16px;}
+.gate-note{margin-top:24px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);}
+
+.nav{display:flex;gap:4px;flex-wrap:wrap;padding:14px 0 10px;border-bottom:2px solid var(--ink);}
+.nb{background:transparent;border:1px solid var(--rule);border-radius:2px;padding:3px 9px;font-size:10px;font-family:'DM Sans',sans-serif;font-weight:600;cursor:pointer;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;transition:all .12s;}
+.nb:hover,.nb.on{background:var(--ink);color:#fff;border-color:var(--ink);}
+.slide{display:none;padding:40px 0 24px;}
+.slide.on{display:block;}
+.bb{font-family:'Bebas Neue',sans-serif;}
+.sr{font-family:'DM Serif Display',serif;font-style:italic;}
+.cap{font-size:10px;letter-spacing:.16em;text-transform:uppercase;font-weight:600;color:var(--muted);}
+.muted{color:var(--muted);}
+.body{font-size:14px;line-height:1.75;color:#2a2a2a;}
+.sm{font-size:12px;line-height:1.65;color:#444;}
+.cover-eye{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:18px;}
+.cover-logo{margin-bottom:22px;}
+.logo svg{width:72px;height:auto;}
+.cover-h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(56px,10vw,100px);line-height:.9;margin-bottom:6px;}
+.cover-sub{font-family:'DM Serif Display',serif;font-style:italic;font-size:clamp(17px,3vw,24px);color:var(--muted);margin-bottom:28px;}
+.rule-bar{width:36px;height:3px;background:var(--ink);margin-bottom:24px;}
+.cover-p{font-size:15px;line-height:1.75;max-width:520px;color:#333;}
+.sh{padding:32px 0 20px;border-bottom:2px solid var(--ink);margin-bottom:28px;}
+.sn{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:6px;}
+.st{font-family:'Bebas Neue',sans-serif;font-size:clamp(34px,6vw,60px);line-height:.95;}
+.sd{font-family:'DM Serif Display',serif;font-style:italic;font-size:16px;color:var(--muted);margin-top:6px;}
+.qb{border-left:3px solid var(--ink);padding:14px 0 14px 18px;margin:24px 0;}
+.qt{font-family:'DM Serif Display',serif;font-style:italic;font-size:19px;line-height:1.5;margin-bottom:6px;}
+.qa{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:600;}
+.chain{display:flex;gap:0;margin:20px 0;}
+.cs{flex:1;padding:16px 12px;border:1.5px solid var(--ink);margin-left:-1.5px;cursor:default;transition:background .12s;}
+.cs:first-child{margin-left:0;border-radius:3px 0 0 3px;}
+.cs:last-child{border-radius:0 3px 3px 0;}
+.cs:hover{background:var(--ink);}
+.cs:hover .cs-n,.cs:hover .cs-name{color:#fff;}
+.cs:hover .cs-d{color:#999;}
+.cs-n{font-family:'Bebas Neue',sans-serif;font-size:26px;line-height:1;margin-bottom:4px;}
+.cs-name{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px;}
+.cs-d{font-size:11px;line-height:1.5;color:var(--muted);}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin:20px 0;align-items:start;}
+.three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.5px;background:var(--ink);border:1.5px solid var(--ink);border-radius:3px;overflow:hidden;margin:20px 0;}
+.tc{background:var(--page);padding:20px 16px;}
+.tc-h{font-family:'Bebas Neue',sans-serif;font-size:22px;margin-bottom:2px;}
+.tc-r{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:14px;}
+.tc-row{padding:7px 0;border-bottom:.5px solid var(--rule);font-size:11px;line-height:1.5;}
+.tc-row:last-child{border-bottom:none;}
+.tc-rl{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:2px;}
+.cg{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:20px 0;}
+.cc{border:1.5px solid var(--ink);border-radius:3px;overflow:hidden;}
+.cc-h{background:var(--ink);color:#fff;padding:16px 18px;}
+.cc-name{font-family:'Bebas Neue',sans-serif;font-size:30px;line-height:1;}
+.cc-t{font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:#888;margin-top:3px;}
+.cc-b{padding:16px 18px;}
+.cc-row{display:flex;gap:8px;margin-bottom:9px;align-items:flex-start;}
+.cc-rl{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);min-width:70px;padding-top:1px;flex-shrink:0;}
+.cc-rv{font-size:11px;line-height:1.5;}
+.tg{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:var(--ink);border:1.5px solid var(--ink);border-radius:3px;overflow:hidden;margin:20px 0;}
+.tgc{background:var(--page);padding:22px 18px;}
+.tgl{font-family:'Bebas Neue',sans-serif;font-size:26px;line-height:1;}
+.tga{color:var(--muted);font-size:16px;margin:3px 0;}
+.tgr{font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--muted);}
+.tgd{font-size:11px;line-height:1.55;margin-top:8px;color:#444;}
+.dlist{margin:20px 0;}
+.di{display:flex;align-items:center;gap:16px;border-bottom:1px solid var(--rule);padding:4px 0;}
+.di-w{font-family:'Bebas Neue',sans-serif;font-size:36px;flex:0 0 180px;}
+.di-d{font-size:12px;color:var(--muted);line-height:1.5;flex:1;}
+.di-n{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--rule);}
+.pg{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5px;background:var(--ink);border:1.5px solid var(--ink);border-radius:3px;overflow:hidden;margin:20px 0;}
+.pc{background:var(--page);padding:18px 12px;}
+.pc-n{font-family:'Bebas Neue',sans-serif;font-size:24px;margin-bottom:10px;}
+.pc-tag{display:inline-block;font-size:9px;letter-spacing:.12em;text-transform:uppercase;font-weight:600;border:1px solid var(--ink);border-radius:2px;padding:2px 5px;margin-bottom:8px;}
+.pc-li{list-style:none;padding:0;}
+.pc-li li{font-size:11px;padding:4px 0;border-bottom:.5px solid var(--rule);line-height:1.4;}
+.pc-li li:last-child{border-bottom:none;}
+.pc-out{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:10px;margin-bottom:3px;}
+.pc-outv{font-size:11px;line-height:1.4;}
+.jlist{margin:20px 0;border:1.5px solid var(--ink);border-radius:3px;overflow:hidden;}
+.ji{display:flex;align-items:stretch;border-bottom:1px solid var(--rule);}
+.ji:last-child{border-bottom:none;}
+.ji-n{font-family:'Bebas Neue',sans-serif;font-size:36px;width:56px;text-align:center;flex-shrink:0;background:var(--off);padding:12px 0;border-right:1px solid var(--rule);display:flex;align-items:center;justify-content:center;}
+.ji-b{padding:12px 18px;}
+.ji-t{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px;}
+.ji-s{font-size:11px;color:var(--muted);line-height:1.5;}
+.ji-inv{background:var(--ink);color:#fff;}
+.ji-inv .ji-n{background:#1a1a1a;color:#fff;border-color:#333;}
+.ji-inv .ji-t{color:#fff;}
+.ji-inv .ji-s{color:#888;}
+.sr-row{display:flex;gap:0;border:1.5px solid var(--ink);border-radius:3px;overflow:hidden;margin:20px 0;}
+.sr-s{flex:1;padding:18px 14px;border-right:1px solid var(--rule);text-align:center;}
+.sr-s:last-child{border-right:none;}
+.sr-n{font-family:'Bebas Neue',sans-serif;font-size:38px;line-height:1;}
+.sr-l{font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);margin-top:3px;}
+.nn{display:grid;grid-template-columns:1fr 1fr;gap:0;background:var(--ink);border:1.5px solid var(--ink);border-radius:3px;overflow:hidden;margin:20px 0;}
+.nn-l{background:var(--page);padding:22px 20px;}
+.nn-r{background:var(--ink);padding:22px 20px;}
+.eg{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:20px 0;}
+.ec{border:1px solid var(--rule);border-radius:3px;padding:14px;}
+.ec-n{font-family:'Bebas Neue',sans-serif;font-size:18px;margin-bottom:5px;}
+.ec-m{font-size:11px;color:var(--muted);line-height:1.5;}
+.divider{height:1.5px;background:var(--rule);margin:24px 0;}
+.hdivider{height:2px;background:var(--ink);margin:24px 0;}
+.foot{display:flex;justify-content:space-between;align-items:center;padding:14px 0;margin-top:6px;border-top:1px solid var(--rule);}
+.fb{background:transparent;border:1px solid var(--rule);border-radius:2px;padding:6px 14px;font-size:11px;font-family:'DM Sans',sans-serif;font-weight:600;cursor:pointer;color:var(--muted);transition:all .12s;letter-spacing:.04em;}
+.fb:hover{background:var(--ink);color:#fff;border-color:var(--ink);}
+.fp{font-size:10px;color:var(--muted);letter-spacing:.1em;}
+.nv{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:20px 0;}
+.nc{border:.5px solid var(--rule);border-radius:3px;padding:12px 14px;}
+.nc-y{font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--ink);margin-bottom:3px;}
+.nc-n{font-size:11px;color:var(--muted);line-height:1.45;}
+.vc{border:1.5px solid var(--ink);border-radius:3px;padding:22px 24px;margin:20px 0;text-align:center;}
+.vc-h{font-family:'Bebas Neue',sans-serif;font-size:42px;line-height:1;margin-bottom:8px;}
+.vc-b{font-size:13px;line-height:1.7;color:#333;max-width:500px;margin:0 auto;}
+.copy-bar{border-top:1.5px solid var(--ink);margin-top:32px;padding:18px 0 8px;display:flex;justify-content:space-between;align-items:center;}
+.copy-text{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);}
+</style>
+
+<div id="gate">
+  <div class="gate-inner">
+    <div class="gate-logo">
+      <svg viewBox="0 0 314 210" xmlns="http://www.w3.org/2000/svg" fill="#0a0a0a">
+        <path d="M200,10 C230,10 265,30 275,70 C285,110 270,150 240,170 C220,183 195,185 175,178 L155,170 C135,162 115,148 105,125 C95,100 100,72 120,52 C140,32 170,10 200,10 Z M200,10 C175,15 150,28 138,52 C125,78 130,108 145,128 C162,152 188,162 210,158 C235,154 255,138 262,115 C270,90 262,62 245,45 C228,28 212,8 200,10 Z"/>
+        <path d="M114,10 C144,10 179,30 189,70 C199,110 184,150 154,170 C134,183 109,185 89,178 L69,170 C49,162 29,148 19,125 C9,100 14,72 34,52 C54,32 84,10 114,10 Z M114,10 C89,15 64,28 52,52 C39,78 44,108 59,128 C76,152 102,162 124,158 C149,154 169,138 176,115 C184,90 176,62 159,45 C142,28 126,8 114,10 Z"/>
+      </svg>
+    </div>
+    <div class="gate-title">ONACERO</div>
+    <div class="gate-sub">The Uniform of Intention</div>
+    <div class="gate-rule"></div>
+    <span class="gate-label">Enter Access Code</span>
+    <input class="gate-input" type="password" id="pw-input" placeholder="· · · · · · · ·" maxlength="32" onkeydown="if(event.key==='Enter')unlock()"/>
+    <button class="gate-btn" onclick="unlock()">Access Document</button>
+    <div class="gate-err" id="pw-err"></div>
+    <div class="gate-note">Confidential · Craigstone Holdings</div>
+  </div>
+</div>
+
+<div id="deck-wrap" style="max-width:860px;margin:0 auto;padding:0 0 40px;">
+
+<div class="nav" id="nav">
+  <button class="nb on" onclick="go(0)">Cover</button>
+  <button class="nb" onclick="go(1)">Mission</button>
+  <button class="nb" onclick="go(2)">The Enemy</button>
+  <button class="nb" onclick="go(3)">Core Insight</button>
+  <button class="nb" onclick="go(4)">Three Stories</button>
+  <button class="nb" onclick="go(5)">Characters</button>
+  <button class="nb" onclick="go(6)">Non-Negotiables</button>
+  <button class="nb" onclick="go(7)">Content</button>
+  <button class="nb" onclick="go(8)">Gravity</button>
+  <button class="nb" onclick="go(9)">Environment</button>
+  <button class="nb" onclick="go(10)">nNocent</button>
+  <button class="nb" onclick="go(11)">The Village</button>
+  <button class="nb" onclick="go(12)">Long-Term</button>
+  <button class="nb" onclick="go(13)">North Star</button>
+  <button class="nb" onclick="go(14)">Flow Chart</button>
+</div>
+
+<!-- 0: COVER -->
+<div class="slide on" id="s0">
+  <div class="cover-eye">World Bible · Version 1 · Confidential</div>
+  <div class="cover-logo logo">
+    <svg viewBox="0 0 314 210" xmlns="http://www.w3.org/2000/svg" fill="#0a0a0a">
+      <path d="M200,10 C230,10 265,30 275,70 C285,110 270,150 240,170 C220,183 195,185 175,178 L155,170 C135,162 115,148 105,125 C95,100 100,72 120,52 C140,32 170,10 200,10 Z M200,10 C175,15 150,28 138,52 C125,78 130,108 145,128 C162,152 188,162 210,158 C235,154 255,138 262,115 C270,90 262,62 245,45 C228,28 212,8 200,10 Z"/>
+      <path d="M114,10 C144,10 179,30 189,70 C199,110 184,150 154,170 C134,183 109,185 89,178 L69,170 C49,162 29,148 19,125 C9,100 14,72 34,52 C54,32 84,10 114,10 Z M114,10 C89,15 64,28 52,52 C39,78 44,108 59,128 C76,152 102,162 124,158 C149,154 169,138 176,115 C184,90 176,62 159,45 C142,28 126,8 114,10 Z"/>
+    </svg>
+  </div>
+  <div class="cover-h1">ONACERO</div>
+  <div class="cover-sub">The Uniform of Intention</div>
+  <div class="rule-bar"></div>
+  <div class="cover-p">This is not a content plan. It is not a marketing plan. It is the operating philosophy behind the world being built. The goal is not to create more content. The goal is to create a cultural identity that happens to have a creator and apparel attached to it.</div>
+  <div class="sr-row" style="margin-top:28px;">
+    <div class="sr-s"><div class="sr-n">1</div><div class="sr-l">Enemy</div></div>
+    <div class="sr-s"><div class="sr-n">4</div><div class="sr-l">Characters</div></div>
+    <div class="sr-s"><div class="sr-n">4</div><div class="sr-l">Content Pillars</div></div>
+    <div class="sr-s"><div class="sr-n">5</div><div class="sr-l">Transformation Stages</div></div>
+    <div class="sr-s"><div class="sr-n">∞</div><div class="sr-l">Compounding Value</div></div>
+  </div>
+  <div class="foot"><button class="fb" onclick="go(1)">Begin →</button><span class="fp">01 / 15</span></div>
+</div>
+
+<!-- 1: MISSION -->
+<div class="slide" id="s1">
+  <div class="sh"><div class="sn">Section 01</div><div class="st">The Mission</div><div class="sd">Not content. Not clothing. Not a creator ecosystem.</div></div>
+  <div class="qb"><div class="qt">"The purpose is to create a culture of intentional builders. People committed to becoming who they were designed to be."</div><div class="qa">Onacero — Master Vision Document</div></div>
+  <div class="cap" style="margin-bottom:12px;">Six Dimensions of Becoming</div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.5px;background:var(--ink);border:1.5px solid var(--ink);border-radius:3px;overflow:hidden;margin:0 0 20px;">
+    <div style="background:var(--page);padding:16px 14px;"><div class="bb" style="font-size:22px;">Physical</div><div class="sm" style="margin-top:4px;">The body as evidence of the standard you hold.</div></div>
+    <div style="background:var(--page);padding:16px 14px;"><div class="bb" style="font-size:22px;">Mental</div><div class="sm" style="margin-top:4px;">How you think determines everything you build.</div></div>
+    <div style="background:var(--page);padding:16px 14px;"><div class="bb" style="font-size:22px;">Financial</div><div class="sm" style="margin-top:4px;">Stewardship. Discipline. Long-range vision.</div></div>
+    <div style="background:var(--page);padding:16px 14px;"><div class="bb" style="font-size:22px;">Relational</div><div class="sm" style="margin-top:4px;">Proximity as a practice. Who you're around is who you become.</div></div>
+    <div style="background:var(--page);padding:16px 14px;"><div class="bb" style="font-size:22px;">Spiritual</div><div class="sm" style="margin-top:4px;">Faith as an active daily posture, not background noise.</div></div>
+    <div style="background:var(--page);padding:16px 14px;"><div class="bb" style="font-size:22px;">Creative</div><div class="sm" style="margin-top:4px;">Output that reflects the full depth of who you are.</div></div>
+  </div>
+  <div class="hdivider"></div>
+  <div class="cap" style="margin-bottom:12px;">The Audience Promise — What They Actually Receive</div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px;">
+    <div style="border:.5px solid var(--rule);border-radius:3px;padding:12px 14px;"><div class="bb" style="font-size:20px;margin-bottom:4px;">Perspective</div><div class="sm">Exposure to how builders think.</div></div>
+    <div style="border:.5px solid var(--rule);border-radius:3px;padding:12px 14px;"><div class="bb" style="font-size:20px;margin-bottom:4px;">Accountability</div><div class="sm">The standard made visible.</div></div>
+    <div style="border:.5px solid var(--rule);border-radius:3px;padding:12px 14px;"><div class="bb" style="font-size:20px;margin-bottom:4px;">Examples</div><div class="sm">Real people doing real work.</div></div>
+    <div style="border:.5px solid var(--rule);border-radius:3px;padding:12px 14px;"><div class="bb" style="font-size:20px;margin-bottom:4px;">Standards</div><div class="sm">A raised floor to stand on.</div></div>
+    <div style="border:.5px solid var(--rule);border-radius:3px;padding:12px 14px;"><div class="bb" style="font-size:20px;margin-bottom:4px;">Exposure</div><div class="sm">Rooms they hadn't seen before.</div></div>
+    <div style="border:1.5px solid var(--ink);border-radius:3px;padding:12px 14px;"><div class="bb" style="font-size:20px;margin-bottom:4px;">Implementation</div><div class="sm">Not inspiration. A practical understanding of how to build a meaningful life.</div></div>
+  </div>
+  <div class="foot"><button class="fb" onclick="go(0)">← Back</button><span class="fp">02 / 15</span><button class="fb" onclick="go(2)">Next →</button></div>
+</div>
+
+<!-- 2: THE ENEMY -->
+<div class="slide" id="s2">
+  <div class="sh"><div class="sn">Section 02</div><div class="st">The Enemy</div><div class="sd">Every strong culture stands against something.</div></div>
+  <div style="margin-bottom:20px;">
+    <div class="bb" style="font-size:88px;line-height:1;border-bottom:3px solid var(--ink);padding-bottom:10px;">DRIFT</div>
+    <div class="sm" style="margin-top:8px;max-width:480px;">The enemy is not a person. Not another brand. Not another creator. The enemy is the slow slide into a slightly worse version of who you meant to be.</div>
+  </div>
+  <div class="dlist">
+    <div class="di"><div class="di-w">Physical</div><div class="di-d">Letting the body reflect a lower standard than your mind holds. The uniform is a daily act of alignment against that.</div><div class="di-n">01</div></div>
+    <div class="di"><div class="di-w">Spiritual</div><div class="di-d">Losing the thread. Faith without practice becomes decoration. Purpose without discipline becomes nostalgia.</div><div class="di-n">02</div></div>
+    <div class="di"><div class="di-w">Financial</div><div class="di-d">Spending against your future. Consuming at the speed of aspiration but building at the speed of convenience.</div><div class="di-n">03</div></div>
+    <div class="di"><div class="di-w">Creative</div><div class="di-d">Producing for the algorithm instead of the vision. Volume over depth. Attention over meaning.</div><div class="di-n">04</div></div>
+    <div class="di"><div class="di-w">Relational</div><div class="di-d">Proximity to the wrong rooms for too long. Comfort with people who aren't becoming.</div><div class="di-n">05</div></div>
+  </div>
+  <div class="qb" style="margin-top:20px;"><div class="qt">"Everything inside the Onacero World should point people away from drift and toward intentional living."</div></div>
+  <div class="foot"><button class="fb" onclick="go(1)">← Back</button><span class="fp">03 / 15</span><button class="fb" onclick="go(3)">Next →</button></div>
+</div>
+
+<!-- 3: CORE INSIGHT -->
+<div class="slide" id="s3">
+  <div class="sh"><div class="sn">Section 03</div><div class="st">The Core Insight</div><div class="sd">This distinction is everything.</div></div>
+  <div class="two">
+    <div style="border:1.5px solid var(--rule);border-radius:3px;padding:22px;">
+      <div class="cap" style="margin-bottom:10px;">What this is not</div>
+      <div class="bb" style="font-size:44px;color:var(--muted);">Cooler</div>
+      <div class="sm" style="margin-top:8px;">Cosmetic. A rebrand. An aesthetic upgrade. Something you can buy. The audience seeing "he's different now" and feeling suspicious.</div>
+    </div>
+    <div style="border:1.5px solid var(--ink);border-radius:3px;padding:22px;background:var(--ink);color:#fff;">
+      <div class="cap" style="margin-bottom:10px;color:#888;">What this is</div>
+      <div class="bb" style="font-size:44px;color:#fff;">More Complete</div>
+      <div style="font-size:12px;color:#ccc;margin-top:8px;line-height:1.6;">Evolution. The audience watching a disciplined builder encounter bigger questions — questions around purpose, leadership, legacy, faith, influence, responsibility, culture, identity.</div>
+    </div>
+  </div>
+  <div class="qb"><div class="qt">"The audience should never feel like they are watching a rebrand. They should feel like they are watching growth."</div></div>
+  <div class="cap" style="margin-bottom:12px;">The Actual Story</div>
+  <div style="border:1.5px solid var(--ink);border-radius:3px;overflow:hidden;margin-bottom:20px;">
+    <div style="background:var(--off);padding:14px 18px;border-bottom:1px solid var(--rule);"><div class="cap" style="margin-bottom:4px;">Not the story</div><div class="sm">"Damii meets Daetrius and gets upgraded."</div></div>
+    <div style="padding:16px 18px;"><div class="cap" style="margin-bottom:4px;">The actual story</div><div style="font-size:13px;line-height:1.7;">"Damii has mastered discipline and execution. Now he is entering a season where discipline must evolve into identity, taste, leadership, legacy, and stewardship."</div></div>
+  </div>
+  <div class="cap" style="margin-bottom:10px;">What Subtly Changes</div>
+  <div class="two">
+    <div><div class="cap" style="margin-bottom:6px;font-size:9px;">From</div><div class="sm" style="line-height:2;">Gym clips · Motivation · Work ethic · Creator content</div></div>
+    <div><div class="cap" style="margin-bottom:6px;font-size:9px;">Toward</div><div class="sm" style="line-height:2;">Better environments · Stronger taste · More intentional storytelling · More thoughtful positioning · More mystery · Stronger cultural awareness</div></div>
+  </div>
+  <div class="sm" style="margin-top:10px;padding:12px 14px;background:var(--off);border-radius:3px;">Reference: Gunna did not stop being Gunna. He became more refined. Damii does not become artsy. He becomes sharper.</div>
+  <div class="foot"><button class="fb" onclick="go(2)">← Back</button><span class="fp">04 / 15</span><button class="fb" onclick="go(4)">Next →</button></div>
+</div>
+
+<!-- 4: THREE STORIES -->
+<div class="slide" id="s4">
+  <div class="sh"><div class="sn">Section 04</div><div class="st">The Three Stories</div><div class="sd">All three evolve simultaneously. All three are real.</div></div>
+  <div class="three">
+    <div class="tc">
+      <div class="tc-h">Damii</div><div class="tc-r">The Practitioner</div>
+      <div class="tc-row"><span class="tc-rl">Season 1 — Builder</span>Body. Business. Income. Results. The credibility is here.</div>
+      <div class="tc-row"><span class="tc-rl">Season 2 — Student</span>New rooms. New ideas. New people. New conversations. New standards.</div>
+      <div class="tc-row"><span class="tc-rl">Season 3 — Curator</span>Introduces music, books, films, people, ideas. Taste becomes trustable.</div>
+      <div class="tc-row"><span class="tc-rl">Season 4 — Connector</span>Interesting people enter through life — not interviews. Athletes, founders, artists, creators, faith leaders.</div>
+      <div class="tc-row"><span class="tc-rl">Season 5 — Leader</span>Gravity built. Not because he got louder. Because he developed pull.</div>
+    </div>
+    <div class="tc">
+      <div class="tc-h">Daetrius</div><div class="tc-r">The Architect</div>
+      <div class="tc-row"><span class="tc-rl">First Encounter</span>Audience meets him inside the process. Never through an introduction. Through contribution.</div>
+      <div class="tc-row"><span class="tc-rl">Audience asks</span>"Who is this guy?" / "Why does Damii keep listening to him?" / "What does he actually do?"</div>
+      <div class="tc-row"><span class="tc-rl">Rule</span>That curiosity is valuable. It should be protected.</div>
+      <div class="tc-row"><span class="tc-rl">Two worlds</span>Through Damii's world: the Architect. Through Daetrius' world: the Man. These remain separate.</div>
+      <div class="tc-row"><span class="tc-rl">Arc</span>Artist → Student → Connector → Curator → Operator</div>
+    </div>
+    <div class="tc">
+      <div class="tc-h">Audience</div><div class="tc-r">The Mirror</div>
+      <div class="tc-row"><span class="tc-rl">Truth</span>The audience is not watching. They are participating.</div>
+      <div class="tc-row"><span class="tc-rl">Path</span>Follower → Builder → Student → Curator → Connector → Leader</div>
+      <div class="tc-row"><span class="tc-rl">Why it works</span>The audience sees pieces of themselves in Damii. That creates belonging — not through content, but through identity.</div>
+      <div class="tc-row"><span class="tc-rl">What they feel</span>"There is a place for someone like me inside this ecosystem." Not because everyone is the same. Because everyone is growing.</div>
+    </div>
+  </div>
+  <div class="qb"><div class="qt">"The audience does not follow content. They follow transformation — and recognize themselves inside it."</div></div>
+  <div class="foot"><button class="fb" onclick="go(3)">← Back</button><span class="fp">05 / 15</span><button class="fb" onclick="go(5)">Next →</button></div>
+</div>
+
+<!-- 5: CHARACTERS -->
+<div class="slide" id="s5">
+  <div class="sh"><div class="sn">Section 05</div><div class="st">Character Bible</div><div class="sd">Every person exists because they are becoming something.</div></div>
+  <div class="cg">
+    <div class="cc">
+      <div class="cc-h"><div class="cc-name">Damii</div><div class="cc-t">The Practitioner</div></div>
+      <div class="cc-b">
+        <div class="cc-row"><span class="cc-rl">Function</span><span class="cc-rv">Does the work. Trains. Builds. Executes. Inspires. Proves things through action.</span></div>
+        <div class="cc-row"><span class="cc-rl">Credibility</span><span class="cc-rv">He lives what he teaches. His audience trusts him because he is authentic — not because he is polished.</span></div>
+        <div class="cc-row"><span class="cc-rl">Evolution</span><span class="cc-rv">Discipline → Identity → Taste → Leadership → Stewardship</span></div>
+        <div class="cc-row"><span class="cc-rl">Audience sees</span><span class="cc-rv">Self-improvement expanding into community building. Results gaining a world around them.</span></div>
+      </div>
+    </div>
+    <div class="cc">
+      <div class="cc-h"><div class="cc-name">Daetrius</div><div class="cc-t">The Architect</div></div>
+      <div class="cc-b">
+        <div class="cc-row"><span class="cc-rl">Function</span><span class="cc-rv">Sees the world around the work. Understands taste, narrative, culture, rooms, positioning, partnerships, timing, identity.</span></div>
+        <div class="cc-row"><span class="cc-rl">Role</span><span class="cc-rv">The catalyst. The operator. The connector. The cultural translator.</span></div>
+        <div class="cc-row"><span class="cc-rl">Relationship</span><span class="cc-rv">Two sharp men sharpening one another. That distinction matters.</span></div>
+        <div class="cc-row"><span class="cc-rl">Arc</span><span class="cc-rv">Artist → Student → Connector → Curator → Operator</span></div>
+      </div>
+    </div>
+    <div class="cc">
+      <div class="cc-h"><div class="cc-name">Carson</div><div class="cc-t">The Witness</div></div>
+      <div class="cc-b">
+        <div class="cc-row"><span class="cc-rl">Function</span><span class="cc-rv">Documents the world while growing inside it. Not the cameraman.</span></div>
+        <div class="cc-row"><span class="cc-rl">Intersection</span><span class="cc-rv">Faith · Youth · Creativity · Culture</span></div>
+        <div class="cc-row"><span class="cc-rl">Arc</span><span class="cc-rv">Creative → Observer → Builder → Shepherd</span></div>
+        <div class="cc-row"><span class="cc-rl">Audience sees</span><span class="cc-rv">While documenting everyone else's evolution, the audience watches his own calling become clearer.</span></div>
+      </div>
+    </div>
+    <div class="cc">
+      <div class="cc-h"><div class="cc-name">Tempest</div><div class="cc-t">The Taste Maker</div></div>
+      <div class="cc-b">
+        <div class="cc-row"><span class="cc-rl">Function</span><span class="cc-rv">Instinct. Taste. Awareness. Social currency. Creative perspective.</span></div>
+        <div class="cc-row"><span class="cc-rl">Challenge</span><span class="cc-rv">Converting taste into ownership, influence into enterprise, vision into business.</span></div>
+        <div class="cc-row"><span class="cc-rl">Arc</span><span class="cc-rv">Explorer → Creator → Founder</span></div>
+        <div class="cc-row"><span class="cc-rl">Exchange</span><span class="cc-rv">Damii gains cultural awareness. Tempest gains structure. Neither saves the other. Both sharpen one another.</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="cap" style="margin-bottom:10px;">The Entry Point — How Daetrius Is Introduced</div>
+  <div style="border:1.5px solid var(--ink);border-radius:3px;overflow:hidden;margin-bottom:4px;">
+    <div style="background:var(--off);padding:14px 18px;border-bottom:1px solid var(--rule);"><div class="cap" style="margin-bottom:6px;">Not this</div><div class="sm">"Meet my new partner Daetrius." — Too obvious. Too transactional.</div></div>
+    <div style="padding:14px 18px;"><div class="cap" style="margin-bottom:8px;">This</div><div class="sm"><span style="font-weight:600;">Damii:</span> "I've been building for years but lately I've been thinking about what this actually becomes."</div><div class="sm" style="margin-top:6px;"><span style="font-weight:600;">Daetrius:</span> "The question isn't what you sell. The question is what people become when they enter your world."</div><div class="sm" style="margin-top:8px;color:var(--muted);">No introduction. No explanation. Discovery.</div></div>
+  </div>
+  <div class="foot"><button class="fb" onclick="go(4)">← Back</button><span class="fp">06 / 15</span><button class="fb" onclick="go(6)">Next →</button></div>
+</div>
+
+<!-- 6: NON-NEGOTIABLES -->
+<div class="slide" id="s6">
+  <div class="sh"><div class="sn">Section 06</div><div class="st">Non-Negotiables</div><div class="sd">Everything built inside the world must align with these principles.</div></div>
+  <div class="two">
+    <div>
+      <div class="cap" style="margin-bottom:12px;">The Foundation</div>
+      <div style="border:1.5px solid var(--ink);border-radius:3px;overflow:hidden;">
+        <div style="background:var(--ink);color:#fff;padding:12px 16px;font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:.06em;">Always Present</div>
+        <div style="padding:0;">
+          <div style="padding:10px 16px;border-bottom:.5px solid var(--rule);font-size:13px;font-weight:600;">Faith</div>
+          <div style="padding:10px 16px;border-bottom:.5px solid var(--rule);font-size:13px;font-weight:600;">Family</div>
+          <div style="padding:10px 16px;border-bottom:.5px solid var(--rule);font-size:13px;font-weight:600;">Integrity</div>
+          <div style="padding:10px 16px;border-bottom:.5px solid var(--rule);font-size:13px;font-weight:600;">Responsibility</div>
+          <div style="padding:10px 16px;font-size:13px;font-weight:600;">Stewardship</div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="cap" style="margin-bottom:12px;">Hard Rules — Content</div>
+      <div style="border:1.5px solid var(--rule);border-radius:3px;overflow:hidden;">
+        <div style="padding:9px 14px;border-bottom:.5px solid var(--rule);display:flex;gap:10px;"><span style="color:var(--muted);font-size:11px;">✗</span><span class="sm">No fake drama</span></div>
+        <div style="padding:9px 14px;border-bottom:.5px solid var(--rule);display:flex;gap:10px;"><span style="color:var(--muted);font-size:11px;">✗</span><span class="sm">No rage bait</span></div>
+        <div style="padding:9px 14px;border-bottom:.5px solid var(--rule);display:flex;gap:10px;"><span style="color:var(--muted);font-size:11px;">✗</span><span class="sm">No humiliation content</span></div>
+        <div style="padding:9px 14px;border-bottom:.5px solid var(--rule);display:flex;gap:10px;"><span style="color:var(--muted);font-size:11px;">✗</span><span class="sm">No clout chasing</span></div>
+        <div style="padding:9px 14px;border-bottom:.5px solid var(--rule);display:flex;gap:10px;"><span style="color:var(--muted);font-size:11px;">✗</span><span class="sm">No performative authenticity</span></div>
+        <div style="padding:9px 14px;display:flex;gap:10px;"><span style="color:var(--muted);font-size:11px;">✗</span><span class="sm">No content created purely for attention</span></div>
+      </div>
+      <div style="margin-top:12px;background:var(--off);border-radius:3px;padding:12px 14px;"><div class="cap" style="margin-bottom:6px;">The Trust Standard</div><div class="sm">Growth must be real. Conversations must be real. Relationships must be real.</div></div>
+    </div>
+  </div>
+  <div class="hdivider"></div>
+  <div class="cap" style="margin-bottom:12px;">World Rules — The Decision Filter</div>
+  <div class="two">
+    <div><div class="cap" style="margin-bottom:8px;font-size:9px;">Show</div><div class="sm" style="line-height:2.2;">Training · Brand development · Fittings · Meals with purpose · Travel with intention · Quiet reflection · Conversations · Process · Responsibility · Stewardship · Community</div></div>
+    <div><div class="cap" style="margin-bottom:8px;font-size:9px;">Avoid</div><div class="sm" style="line-height:2.2;">Random flexing · Empty luxury · Forced coolness · Performative depth · Obvious rebranding · Overexposure of Daetrius · Heavy-handed preaching</div></div>
+  </div>
+  <div class="foot"><button class="fb" onclick="go(5)">← Back</button><span class="fp">07 / 15</span><button class="fb" onclick="go(7)">Next →</button></div>
+</div>
+
+<!-- 7: CONTENT -->
+<div class="slide" id="s7">
+  <div class="sh"><div class="sn">Section 07</div><div class="st">Content Architecture</div><div class="sd">Four pillars. One flywheel. Each one reinforces the next.</div></div>
+  <div class="pg">
+    <div class="pc"><div class="pc-n">Build</div><div class="pc-tag">Damii Alone</div><div class="sm" style="margin-bottom:8px;font-size:11px;">The practitioner in full view.</div><ul class="pc-li"><li>Fitness · Discipline</li><li>Entrepreneurship</li><li>Execution · Results</li><li>The work in real time</li></ul><div class="pc-out">Audience outcome</div><div class="pc-outv">Invested in the process, not just the result.</div></div>
+    <div class="pc"><div class="pc-n">Think</div><div class="pc-tag">Damii + Daetrius</div><div class="sm" style="margin-bottom:8px;font-size:11px;">Conversations inside real life. Not podcasts.</div><ul class="pc-li"><li>Gym cool-downs</li><li>Meals · Car rides</li><li>Walks · Fittings</li><li>Work sessions</li></ul><div class="pc-out">Audience outcome</div><div class="pc-outv">Intellectual trust. The world elevated beyond aesthetics.</div></div>
+    <div class="pc"><div class="pc-n">Live</div><div class="pc-tag">The World</div><div class="sm" style="margin-bottom:8px;font-size:11px;">The environment as argument.</div><ul class="pc-li"><li>Travel · Friendships</li><li>Training · Building</li><li>Community</li><li>Faith-coded moments</li></ul><div class="pc-out">Audience outcome</div><div class="pc-outv">The uniform seen across all domains of life.</div></div>
+    <div class="pc"><div class="pc-n">Curate</div><div class="pc-tag">Most Important Future Pillar</div><div class="sm" style="margin-bottom:8px;font-size:11px;">People become who they are through inputs — not workouts.</div><ul class="pc-li"><li>Music · Books · Films</li><li>Ideas · People</li><li>Perspective</li></ul><div class="pc-out">Audience outcome</div><div class="pc-outv">From teaching how to improve → teaching what to consume. A different level of influence.</div></div>
+  </div>
+  <div class="qb"><div class="qt">"The first question isn't what you sell. It's what people become when they enter your world."</div></div>
+  <svg viewBox="0 0 680 100" style="width:100%;display:block;margin:0 0 16px;" xmlns="http://www.w3.org/2000/svg">
+    <defs><marker id="af" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M2 1L8 5L2 9" fill="none" stroke="#0a0a0a" stroke-width="1.5" stroke-linecap="round"/></marker></defs>
+    <rect x="20" y="28" width="120" height="44" rx="3" fill="#0a0a0a"/>
+    <text x="80" y="53" text-anchor="middle" fill="#fff" font-size="13" font-weight="700" font-family="'DM Sans',sans-serif" dominant-baseline="central">BUILD</text>
+    <line x1="142" y1="50" x2="178" y2="50" stroke="#0a0a0a" stroke-width="1.5" marker-end="url(#af)"/>
+    <rect x="178" y="28" width="120" height="44" rx="3" fill="#f5f4f1" stroke="#0a0a0a" stroke-width="1.5"/>
+    <text x="238" y="53" text-anchor="middle" fill="#0a0a0a" font-size="13" font-weight="700" font-family="'DM Sans',sans-serif" dominant-baseline="central">THINK</text>
+    <line x1="300" y1="50" x2="336" y2="50" stroke="#0a0a0a" stroke-width="1.5" marker-end="url(#af)"/>
+    <rect x="336" y="28" width="120" height="44" rx="3" fill="#f5f4f1" stroke="#0a0a0a" stroke-width="1.5"/>
+    <text x="396" y="53" text-anchor="middle" fill="#0a0a0a" font-size="13" font-weight="700" font-family="'DM Sans',sans-serif" dominant-baseline="central">LIVE</text>
+    <line x1="458" y1="50" x2="494" y2="50" stroke="#0a0a0a" stroke-width="1.5" marker-end="url(#af)"/>
+    <rect x="494" y="28" width="120" height="44" rx="3" fill="#f5f4f1" stroke="#0a0a0a" stroke-width="1.5"/>
+    <text x="554" y="53" text-anchor="middle" fill="#0a0a0a" font-size="13" font-weight="700" font-family="'DM Sans',sans-serif" dominant-baseline="central">CURATE</text>
+    <path d="M614,50 Q640,50 640,82 Q640,95 554,95 L80,95 Q20,95 20,82 L20,74" fill="none" stroke="#0a0a0a" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#af)"/>
+  </svg>
+  <div class="foot"><button class="fb" onclick="go(6)">← Back</button><span class="fp">08 / 15</span><button class="fb" onclick="go(8)">Next →</button></div>
+</div>
+
+<!-- 8: GRAVITY -->
+<div class="slide" id="s8">
+  <div class="sh"><div class="sn">Section 08</div><div class="st">The Gravity Strategy</div><div class="sd">The goal is not visibility. The goal is gravity.</div></div>
+  <div class="two" style="margin-bottom:4px;">
+    <div style="border:1.5px solid var(--rule);border-radius:3px;padding:20px;">
+      <div class="cap" style="margin-bottom:8px;">Visibility</div>
+      <div class="bb" style="font-size:36px;color:var(--muted);margin-bottom:8px;">Most Creators</div>
+      <div class="sm">Reach. Impressions. Views. Algorithm-dependent. Short half-life. Replaceable. Easy to buy.</div>
+      <div style="margin-top:14px;font-size:11px;font-style:italic;color:var(--faint);">"Look at me."</div>
+    </div>
+    <div style="border:1.5px solid var(--ink);border-radius:3px;padding:20px;background:var(--ink);color:#fff;">
+      <div class="cap" style="margin-bottom:8px;color:#888;">Gravity</div>
+      <div class="bb" style="font-size:36px;color:#fff;margin-bottom:8px;">Damii's World</div>
+      <div style="font-size:12px;color:#ccc;line-height:1.65;">Pull. Return rate. Word of mouth. Cannot be purchased. Compounds over years. Builds community before products ever exist.</div>
+      <div style="margin-top:14px;font-size:11px;font-style:italic;color:#555;">"People naturally gather."</div>
+    </div>
+  </div>
+  <div class="qb"><div class="qt">"Most creators grow through content. Damii grows through context. Interesting people begin entering the world — not as guests, not as collaborations, but as participants."</div></div>
+  <div class="cap" style="margin-bottom:12px;">How Gravity Accumulates</div>
+  <div class="jlist">
+    <div class="ji"><div class="ji-n">01</div><div class="ji-b"><div class="ji-t">People Gather</div><div class="ji-s">Drawn by the content. Something resonates. They don't fully understand why yet — but they come back.</div></div></div>
+    <div class="ji"><div class="ji-n">02</div><div class="ji-b"><div class="ji-t">People Connect</div><div class="ji-s">The audience begins finding each other. A community forms around shared context — not the creator, but the worldview behind him.</div></div></div>
+    <div class="ji"><div class="ji-n">03</div><div class="ji-b"><div class="ji-t">People Participate</div><div class="ji-s">They start showing up in the world. Wearing the uniform. Using the language. Applying the framework to their own life.</div></div></div>
+    <div class="ji ji-inv"><div class="ji-n">04</div><div class="ji-b"><div class="ji-t">People Create Gravity</div><div class="ji-s">The audience becomes the distribution. Organic. Compounding. Irreplaceable. This is the only kind that lasts.</div></div></div>
+  </div>
+  <div class="foot"><button class="fb" onclick="go(7)">← Back</button><span class="fp">09 / 15</span><button class="fb" onclick="go(9)">Next →</button></div>
+</div>
+
+<!-- 9: ENVIRONMENT -->
+<div class="slide" id="s9">
+  <div class="sh"><div class="sn">Section 09</div><div class="st">The Environment Strategy</div><div class="sd">Not wealth. Not luxury. Standards.</div></div>
+  <div class="qb"><div class="qt">"We are not showing wealth. We are showing standards. The audience should feel: He is becoming more worldly. Not: He is becoming richer."</div></div>
+  <div class="eg">
+    <div class="ec"><div class="ec-n">Creative Studios</div><div class="ec-m">Discipline is visible before a word is spoken.</div></div>
+    <div class="ec"><div class="ec-n">Showrooms</div><div class="ec-m">Taste is physical. What you surround yourself with reveals your standard.</div></div>
+    <div class="ec"><div class="ec-n">Conference Tables</div><div class="ec-m">Real conversations in real rooms about real things.</div></div>
+    <div class="ec"><div class="ec-n">Private Dinners</div><div class="ec-m">Proximity is curated. The table reflects who you've become.</div></div>
+    <div class="ec"><div class="ec-n">Hotel Lobbies</div><div class="ec-m">Belonging without needing to announce it.</div></div>
+    <div class="ec"><div class="ec-n">Airport Lounges</div><div class="ec-m">Movement is a statement. Traveling with intention communicates what a bio cannot.</div></div>
+    <div class="ec"><div class="ec-n">Fitting Rooms</div><div class="ec-m">The moment the uniform meets the person. Care for presentation is care for self.</div></div>
+    <div class="ec"><div class="ec-n">Gyms After Hours</div><div class="ec-m">Physical discipline is the most honest signal of internal commitment.</div></div>
+    <div class="ec"><div class="ec-n">Moodboards / Garment Racks</div><div class="ec-m">The infrastructure of serious creative work.</div></div>
+  </div>
+  <div class="foot"><button class="fb" onclick="go(8)">← Back</button><span class="fp">10 / 15</span><button class="fb" onclick="go(10)">Next →</button></div>
+</div>
+
+<!-- 10: nNOCENT -->
+<div class="slide" id="s10">
+  <div class="sh"><div class="sn">Section 10</div><div class="st">The nNocent Bridge</div><div class="sd">It arrives as discovery. Never as promotion.</div></div>
+  <div class="nn">
+    <div class="nn-l">
+      <div class="cap" style="margin-bottom:10px;">The Rule</div>
+      <div class="bb" style="font-size:32px;margin-bottom:12px;">Never Announced</div>
+      <div class="sm" style="margin-bottom:16px;">nNocent is not part of the initial story. It should never be forced into the Onacero World. It emerges naturally through trust.</div>
+      <div class="cap" style="margin-bottom:8px;">Before nNocent, the audience encounters:</div>
+      <div class="sm" style="line-height:2.2;">Purity · Wholeness · Wonder · Innocence · Becoming · Healing ambition · Protecting softness · Returning to what matters</div>
+    </div>
+    <div class="nn-r">
+      <div class="cap" style="margin-bottom:10px;color:#888;">What the Audience Should Feel</div>
+      <div style="font-family:'DM Serif Display',serif;font-style:italic;font-size:26px;color:#fff;margin-bottom:16px;line-height:1.3;">"This has been here the entire time."</div>
+      <div style="font-size:12px;color:#ccc;line-height:1.7;">That feeling is only possible if the world was built correctly before nNocent arrived. The trust must exist first. The taste must be trusted first. The source must be credible first. Then — and only then — the artist.</div>
+    </div>
+  </div>
+  <div class="cap" style="margin-bottom:12px;">The Discovery Path</div>
+  <div class="jlist">
+    <div class="ji"><div class="ji-n">01</div><div class="ji-b"><div class="ji-t">Trust the People</div><div class="ji-s">Audience invests in Damii and Daetrius as humans — their consistency, character, track record over time.</div></div></div>
+    <div class="ji"><div class="ji-n">02</div><div class="ji-b"><div class="ji-t">Trust the Taste</div><div class="ji-s">Human trust extends to what they reference, curate, endorse. The taste becomes credible because the people are credible.</div></div></div>
+    <div class="ji"><div class="ji-n">03</div><div class="ji-b"><div class="ji-t">Trust the Perspective</div><div class="ji-s">The audience adopts the worldview. The framework. The standards. The language. It becomes their own.</div></div></div>
+    <div class="ji"><div class="ji-n">04</div><div class="ji-b"><div class="ji-t">Discover Deeper Layers</div><div class="ji-s">References point somewhere new. A name keeps appearing. Curiosity builds before explanation arrives.</div></div></div>
+    <div class="ji ji-inv"><div class="ji-n">05</div><div class="ji-b"><div class="ji-t">Discover nNocent</div><div class="ji-s">The audience arrives ready. Not cold. Not needing to be convinced. The world built the bridge. They walked across it themselves.</div></div></div>
+  </div>
+  <div class="foot"><button class="fb" onclick="go(9)">← Back</button><span class="fp">11 / 15</span><button class="fb" onclick="go(11)">Next →</button></div>
+</div>
+
+<!-- 11: THE VILLAGE -->
+<div class="slide" id="s11">
+  <div class="sh"><div class="sn">Section 11</div><div class="st">The Village</div><div class="sd">People do not enter because they are famous. They enter because they are becoming.</div></div>
+  <div class="qb"><div class="qt">"The audience begins by following individuals. Eventually they realize they are watching a village."</div></div>
+  <div style="margin:20px 0;">
+    <svg viewBox="0 0 680 300" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;">
+      <circle cx="340" cy="150" r="54" fill="#0a0a0a"/>
+      <text x="340" y="145" text-anchor="middle" fill="#fff" font-size="13" font-weight="700" font-family="'DM Sans',sans-serif">ONACERO</text>
+      <text x="340" y="162" text-anchor="middle" fill="#888" font-size="10" font-family="'DM Sans',sans-serif">The Center</text>
+      <circle cx="340" cy="46" r="34" fill="#f5f4f1" stroke="#0a0a0a" stroke-width="1.5"/>
+      <text x="340" y="41" text-anchor="middle" fill="#0a0a0a" font-size="11" font-weight="700" font-family="'DM Sans',sans-serif">Damii</text>
+      <text x="340" y="56" text-anchor="middle" fill="#6b6763" font-size="9" font-family="'DM Sans',sans-serif">Practitioner</text>
+      <circle cx="176" cy="88" r="34" fill="#f5f4f1" stroke="#0a0a0a" stroke-width="1.5"/>
+      <text x="176" y="83" text-anchor="middle" fill="#0a0a0a" font-size="11" font-weight="700" font-family="'DM Sans',sans-serif">Daetrius</text>
+      <text x="176" y="98" text-anchor="middle" fill="#6b6763" font-size="9" font-family="'DM Sans',sans-serif">Architect</text>
+      <circle cx="504" cy="88" r="34" fill="#f5f4f1" stroke="#0a0a0a" stroke-width="1.5"/>
+      <text x="504" y="83" text-anchor="middle" fill="#0a0a0a" font-size="11" font-weight="700" font-family="'DM Sans',sans-serif">Tempest</text>
+      <text x="504" y="98" text-anchor="middle" fill="#6b6763" font-size="9" font-family="'DM Sans',sans-serif">Taste Maker</text>
+      <circle cx="176" cy="212" r="34" fill="#f5f4f1" stroke="#0a0a0a" stroke-width="1.5"/>
+      <text x="176" y="207" text-anchor="middle" fill="#0a0a0a" font-size="11" font-weight="700" font-family="'DM Sans',sans-serif">Carson</text>
+      <text x="176" y="222" text-anchor="middle" fill="#6b6763" font-size="9" font-family="'DM Sans',sans-serif">Witness</text>
+      <circle cx="504" cy="212" r="34" fill="#f5f4f1" stroke="#0a0a0a" stroke-width="1.5"/>
+      <text x="504" y="207" text-anchor="middle" fill="#0a0a0a" font-size="11" font-weight="700" font-family="'DM Sans',sans-serif">Audience</text>
+      <text x="504" y="222" text-anchor="middle" fill="#6b6763" font-size="9" font-family="'DM Sans',sans-serif">Community</text>
+      <line x1="340" y1="100" x2="340" y2="96" stroke="#0a0a0a" stroke-width=".5"/>
+      <line x1="205" y1="104" x2="293" y2="133" stroke="#0a0a0a" stroke-width=".5"/>
+      <line x1="476" y1="104" x2="388" y2="133" stroke="#0a0a0a" stroke-width=".5"/>
+      <line x1="205" y1="198" x2="293" y2="170" stroke="#0a0a0a" stroke-width=".5"/>
+      <line x1="476" y1="198" x2="388" y2="170" stroke="#0a0a0a" stroke-width=".5"/>
+      <circle cx="60" cy="150" r="22" fill="none" stroke="#e0ddd8" stroke-width="1" stroke-dasharray="3,3"/>
+      <text x="60" y="146" text-anchor="middle" fill="#6b6763" font-size="9" font-family="'DM Sans',sans-serif">Artists</text>
+      <text x="60" y="158" text-anchor="middle" fill="#6b6763" font-size="9" font-family="'DM Sans',sans-serif">Founders</text>
+      <circle cx="620" cy="150" r="22" fill="none" stroke="#e0ddd8" stroke-width="1" stroke-dasharray="3,3"/>
+      <text x="620" y="146" text-anchor="middle" fill="#6b6763" font-size="9" font-family="'DM Sans',sans-serif">Athletes</text>
+      <text x="620" y="158" text-anchor="middle" fill="#6b6763" font-size="9" font-family="'DM Sans',sans-serif">Builders</text>
+      <text x="340" y="287" text-anchor="middle" fill="#c8c5c0" font-size="10" font-family="'DM Sans',sans-serif">Entry is earned — not through fame, but through becoming</text>
+    </svg>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;">
+    <div style="border:.5px solid var(--rule);border-radius:3px;padding:12px;"><div class="bb" style="font-size:18px;margin-bottom:4px;">Body</div><div class="sm">Physical discipline as a shared standard.</div></div>
+    <div style="border:.5px solid var(--rule);border-radius:3px;padding:12px;"><div class="bb" style="font-size:18px;margin-bottom:4px;">Mind</div><div class="sm">Ideas that actually raise the floor.</div></div>
+    <div style="border:.5px solid var(--rule);border-radius:3px;padding:12px;"><div class="bb" style="font-size:18px;margin-bottom:4px;">Faith</div><div class="sm">Belief that is lived, not displayed.</div></div>
+    <div style="border:.5px solid var(--rule);border-radius:3px;padding:12px;"><div class="bb" style="font-size:18px;margin-bottom:4px;">Business</div><div class="sm">Real work. Real process. Real results.</div></div>
+    <div style="border:.5px solid var(--rule);border-radius:3px;padding:12px;"><div class="bb" style="font-size:18px;margin-bottom:4px;">Family</div><div class="sm">The reason the work matters at all.</div></div>
+    <div style="border:.5px solid var(--rule);border-radius:3px;padding:12px;"><div class="bb" style="font-size:18px;margin-bottom:4px;">Community</div><div class="sm">People building together. Not performing together.</div></div>
+  </div>
+  <div class="foot"><button class="fb" onclick="go(10)">← Back</button><span class="fp">12 / 15</span><button class="fb" onclick="go(12)">Next →</button></div>
+</div>
+
+<!-- 12: LONG-TERM -->
+<div class="slide" id="s12">
+  <div class="sh"><div class="sn">Section 12</div><div class="st">The Long-Term Vision</div><div class="sd">The highest version is a self-sustaining ecosystem.</div></div>
+  <div class="qb"><div class="qt">"The audience begins by following individuals. Eventually they become members of a culture. The culture becomes a community. The community becomes an ecosystem. The ecosystem becomes an asset."</div></div>
+  <div style="border:1.5px solid var(--ink);border-radius:3px;overflow:hidden;margin-bottom:20px;">
+    <div style="display:flex;align-items:stretch;border-bottom:1px solid var(--rule);"><div style="background:var(--ink);color:#fff;padding:12px 16px;font-family:'Bebas Neue',sans-serif;font-size:18px;min-width:120px;display:flex;align-items:center;">Onacero</div><div style="padding:12px 16px;font-size:12px;line-height:1.6;">The front door. Not the destination. Clothing creates visibility. Content creates trust. People create connection. Community creates belonging. Transformation creates loyalty.</div></div>
+    <div style="display:flex;align-items:stretch;border-bottom:1px solid var(--rule);"><div style="background:var(--off);padding:12px 16px;font-family:'Bebas Neue',sans-serif;font-size:18px;min-width:120px;display:flex;align-items:center;border-right:1px solid var(--rule);">Content</div><div style="padding:12px 16px;font-size:12px;line-height:1.6;">The proof. Compounds because it never goes stale — a viewer who joins at Stage 1 revisits archive content when they reach Stage 3.</div></div>
+    <div style="display:flex;align-items:stretch;border-bottom:1px solid var(--rule);"><div style="background:var(--off);padding:12px 16px;font-family:'Bebas Neue',sans-serif;font-size:18px;min-width:120px;display:flex;align-items:center;border-right:1px solid var(--rule);">Trust</div><div style="padding:12px 16px;font-size:12px;line-height:1.6;">Built over time. Cannot be shortcut. The non-negotiables exist specifically to protect it. Once broken, the entire ecosystem is compromised.</div></div>
+    <div style="display:flex;align-items:stretch;border-bottom:1px solid var(--rule);"><div style="background:var(--off);padding:12px 16px;font-family:'Bebas Neue',sans-serif;font-size:18px;min-width:120px;display:flex;align-items:center;border-right:1px solid var(--rule);">Community</div><div style="padding:12px 16px;font-size:12px;line-height:1.6;">The Village. Where the audience stops watching and starts identifying. What outlasts any platform.</div></div>
+    <div style="display:flex;align-items:stretch;"><div style="background:var(--ink);color:#fff;padding:12px 16px;font-family:'Bebas Neue',sans-serif;font-size:18px;min-width:120px;display:flex;align-items:center;">Ownership</div><div style="padding:12px 16px;font-size:12px;line-height:1.6;">Equity. IP. Cultural capital. Fan Forge as infrastructure. Events as compounding touchpoints. The ecosystem owns itself.</div></div>
+  </div>
+  <div class="cap" style="margin-bottom:10px;">Time Horizon</div>
+  <div class="nv">
+    <div class="nc"><div class="nc-y">Year 1–2</div><div class="nc-n">Content consistency builds trust. Audience grows through genuine transformation. The world's identity becomes clear.</div></div>
+    <div class="nc"><div class="nc-y">Year 2–3</div><div class="nc-n">Community solidifies. The Village becomes recognizable. Events create physical touchpoints. Relationships compound.</div></div>
+    <div class="nc"><div class="nc-y">Year 3–5</div><div class="nc-n">Fan Forge provides intelligence infrastructure. Partnerships are selective and aligned. IP generates value independently.</div></div>
+    <div class="nc"><div class="nc-y">Year 5+</div><div class="nc-n">Ownership established. The ecosystem sustains itself. New builders enter the Village. The world belongs to the culture it created.</div></div>
+  </div>
+  <div class="foot"><button class="fb" onclick="go(11)">← Back</button><span class="fp">13 / 15</span><button class="fb" onclick="go(13)">Next →</button></div>
+</div>
+
+<!-- 13: NORTH STAR -->
+<div class="slide" id="s13">
+  <div class="sh"><div class="sn">Section 13</div><div class="st">The North Star</div><div class="sd">Every decision evaluated against one question.</div></div>
+  <div class="vc">
+    <div class="bb vc-h">Does this help people become more intentional?</div>
+    <div class="vc-b">If yes — it belongs. Content. Products. Partnerships. Events. People. Opportunities. Expansion. All of it. If no — it doesn't matter how compelling it looks or how much money it offers.</div>
+  </div>
+  <div class="qb"><div class="qt">"If someone spent 30 days inside the world — what music would they hear? What books would they read? What conversations would they have? What would they stop consuming? What would they start becoming? The answer to that question determines everything that comes next."</div></div>
+  <div class="cap" style="margin-bottom:12px;">The Onacero Position — Precisely Stated</div>
+  <div style="display:grid;grid-template-columns:1fr;gap:1.5px;background:var(--ink);border:1.5px solid var(--ink);border-radius:3px;overflow:hidden;margin-bottom:20px;">
+    <div style="background:var(--page);padding:14px 18px;display:flex;gap:16px;align-items:flex-start;border-bottom:.5px solid var(--rule);"><div class="bb" style="font-size:18px;min-width:120px;">Onacero is not</div><div class="sm">Apparel. Apparel is one expression of Onacero.</div></div>
+    <div style="background:var(--page);padding:14px 18px;display:flex;gap:16px;align-items:flex-start;border-bottom:.5px solid var(--rule);"><div class="bb" style="font-size:18px;min-width:120px;">Onacero is</div><div class="sm">The Uniform of Intention. A signal for people actively building body, mind, business, faith, family, and community.</div></div>
+    <div style="background:var(--page);padding:14px 18px;display:flex;gap:16px;align-items:flex-start;border-bottom:.5px solid var(--rule);"><div class="bb" style="font-size:18px;min-width:120px;">The clothes are</div><div class="sm">The signal.</div></div>
+    <div style="background:var(--page);padding:14px 18px;display:flex;gap:16px;align-items:flex-start;border-bottom:.5px solid var(--rule);"><div class="bb" style="font-size:18px;min-width:120px;">The identity is</div><div class="sm">The product.</div></div>
+    <div style="background:var(--page);padding:14px 18px;display:flex;gap:16px;align-items:flex-start;border-bottom:.5px solid var(--rule);"><div class="bb" style="font-size:18px;min-width:120px;">The content is</div><div class="sm">The proof.</div></div>
+    <div style="background:var(--page);padding:14px 18px;display:flex;gap:16px;align-items:flex-start;border-bottom:.5px solid var(--rule);"><div class="bb" style="font-size:18px;min-width:120px;">The community is</div><div class="sm">The asset.</div></div>
+    <div style="background:var(--ink);padding:14px 18px;display:flex;gap:16px;align-items:flex-start;"><div class="bb" style="font-size:18px;min-width:120px;color:#fff;">Fan Forge is</div><div style="font-size:12px;color:#ccc;line-height:1.6;">The infrastructure. The intelligence layer that turns culture into compounding data and compounding data into ownership.</div></div>
+  </div>
+  <div class="foot"><button class="fb" onclick="go(12)">← Back</button><span class="fp">14 / 15</span><button class="fb" onclick="go(14)">Next →</button></div>
+</div>
+
+<!-- 14: FLOW CHART -->
+<div class="slide" id="s14">
+  <div class="sh"><div class="sn">Flow Chart</div><div class="st">Onacero World</div><div class="sd">The complete architecture — from philosophy to ownership.</div></div>
+  <svg viewBox="0 0 680 880" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;">
+    <defs>
+      <marker id="fc" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M2 1L8 5L2 9" fill="none" stroke="#0a0a0a" stroke-width="1.5" stroke-linecap="round"/></marker>
+      <marker id="fd" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M2 1L8 5L2 9" fill="none" stroke="#c8c5c0" stroke-width="1.5" stroke-linecap="round"/></marker>
+    </defs>
+    <rect x="215" y="10" width="250" height="52" rx="3" fill="#0a0a0a"/>
+    <text x="340" y="30" text-anchor="middle" fill="#fff" font-size="10" letter-spacing="2" font-weight="600" font-family="'DM Sans',sans-serif">NORTH STAR</text>
+    <text x="340" y="48" text-anchor="middle" fill="#888" font-size="10" font-family="'DM Sans',sans-serif">Intentional living. Transformation. Legacy.</text>
+    <line x1="340" y1="62" x2="340" y2="90" stroke="#0a0a0a" stroke-width="1.5" marker-end="url(#fc)"/>
+    <rect x="200" y="90" width="280" height="52" rx="3" fill="#f5f4f1" stroke="#0a0a0a" stroke-width="1.5"/>
+    <text x="340" y="110" text-anchor="middle" fill="#0a0a0a" font-size="10" letter-spacing="2" font-weight="600" font-family="'DM Sans',sans-serif">THE ENEMY: DRIFT</text>
+    <text x="340" y="128" text-anchor="middle" fill="#6b6763" font-size="10" font-family="'DM Sans',sans-serif">Physical · Spiritual · Financial · Creative · Relational</text>
+    <line x1="340" y1="142" x2="340" y2="170" stroke="#0a0a0a" stroke-width="1.5" marker-end="url(#fc)"/>
+    <rect x="200" y="170" width="280" height="52" rx="3" fill="#f5f4f1" stroke="#0a0a0a" stroke-width="1.5"/>
+    <text x="340" y="190" text-anchor="middle" fill="#0a0a0a" font-size="10" letter-spacing="2" font-weight="600" font-family="'DM Sans',sans-serif">NON-NEGOTIABLES</text>
+    <text x="340" y="208" text-anchor="middle" fill="#6b6763" font-size="10" font-family="'DM Sans',sans-serif">Faith · Family · Integrity · Responsibility · Stewardship</text>
+    <line x1="340" y1="222" x2="340" y2="258" stroke="#0a0a0a" stroke-width="1.5" marker-end="url(#fc)"/>
+    <text x="340" y="272" text-anchor="middle" fill="#6b6763" font-size="9" letter-spacing="2" font-weight="600" font-family="'DM Sans',sans-serif">CHARACTERS</text>
+    <rect x="22" y="280" width="138" height="48" rx="3" fill="#f5f4f1" stroke="#0a0a0a" stroke-width="1"/>
+    <text x="91" y="299" text-anchor="middle" fill="#0a0a0a" font-size="11" font-weight="700" font-family="'DM Sans',sans-serif">Damii</text>
+    <text x="91" y="316" text-anchor="middle" fill="#6b6763" font-size="9" font-family="'DM Sans',sans-serif">The Practitioner</text>
+    <rect x="175" y="280" width="138" height="48" rx="3" fill="#f5f4f1" stroke="#0a0a0a" stroke-width="1"/>
+    <text x="244" y="299" text-anchor="middle" fill="#0a0a0a" font-size="11" font-weight="700" font-family="'DM Sans',sans-serif">Daetrius</text>
+    <text x="244" y="316" text-anchor="middle" fill="#6b6763" font-size="9" font-family="'DM Sans',sans-serif">The Architect</text>
+    <rect x="328" y="280" width="138" height="48" rx="3" fill="#f5f4f1" stroke="#0a0a0a" stroke-width="1"/>
+    <text x="397" y="299" text-anchor="middle" fill="#0a0a0a" font-size="11" font-weight="700" font-family="'DM Sans',sans-serif">Carson</text>
+    <text x="397" y="316" text-anchor="middle" fill="#6b6763" font-size="9" font-family="'DM Sans',sans-serif">The Witness</text>
+    <rect x="481" y="280" width="138" height="48" rx="3" fill="#f5f4f1" stroke="#0a0a0a" stroke-width="1"/>
+    <text x="550" y="299" text-anchor="middle" fill="#0a0a0a" font-size="11" font-weight="700" font-family="'DM Sans',sans-serif">Tempest</text>
+    <text x="550" y="316" text-anchor="middle" fill="#6b6763" font-size="9" font-family="'DM Sans',sans-serif">The Taste Maker</text>
+    <line x1="91" y1="328" x2="186" y2="368" stroke="#0a0a0a" stroke-width="1" marker-end="url(#fc)"/>
+    <line x1="244" y1="328" x2="294" y2="368" stroke="#0a0a0a" stroke-width="1" marker-end="url(#fc)"/>
+    <line x1="397" y1="328" x2="386" y2="368" stroke="#0a0a0a" stroke-width="1" marker-end="url(#fc)"/>
+    <line x1="550" y1="328" x2="494" y2="368" stroke="#0a0a0a" stroke-width="1" marker-end="url(#fc)"/>
+    <text x="340" y="382" text-anchor="middle" fill="#6b6763" font-size="9" letter-spacing="2" font-weight="600" font-family="'DM Sans',sans-serif">CONTENT PILLARS</text>
+    <rect x="22" y="390" width="148" height="48" rx="3" fill="#0a0a0a"/>
+    <text x="96" y="409" text-anchor="middle" fill="#fff" font-size="12" font-weight="700" font-family="'DM Sans',sans-serif">BUILD</text>
+    <text x="96" y="425" text-anchor="middle" fill="#888" font-size="9" font-family="'DM Sans',sans-serif">Action · Craft · Results</text>
+    <rect x="180" y="390" width="148" height="48" rx="3" fill="#0a0a0a"/>
+    <text x="254" y="409" text-anchor="middle" fill="#fff" font-size="12" font-weight="700" font-family="'DM Sans',sans-serif">THINK</text>
+    <text x="254" y="425" text-anchor="middle" fill="#888" font-size="9" font-family="'DM Sans',sans-serif">Conversations · Philosophy</text>
+    <rect x="338" y="390" width="148" height="48" rx="3" fill="#0a0a0a"/>
+    <text x="412" y="409" text-anchor="middle" fill="#fff" font-size="12" font-weight="700" font-family="'DM Sans',sans-serif">LIVE</text>
+    <text x="412" y="425" text-anchor="middle" fill="#888" font-size="9" font-family="'DM Sans',sans-serif">Context · Environment</text>
+    <rect x="496" y="390" width="148" height="48" rx="3" fill="#0a0a0a"/>
+    <text x="570" y="409" text-anchor="middle" fill="#fff" font-size="12" font-weight="700" font-family="'DM Sans',sans-serif">CURATE</text>
+    <text x="570" y="425" text-anchor="middle" fill="#888" font-size="9" font-family="'DM Sans',sans-serif">Taste · Influence · Inputs</text>
+    <line x1="96" y1="438" x2="210" y2="478" stroke="#0a0a0a" stroke-width="1" marker-end="url(#fc)"/>
+    <line x1="254" y1="438" x2="300" y2="478" stroke="#0a0a0a" stroke-width="1" marker-end="url(#fc)"/>
+    <line x1="412" y1="438" x2="380" y2="478" stroke="#0a0a0a" stroke-width="1" marker-end="url(#fc)"/>
+    <line x1="570" y1="438" x2="470" y2="478" stroke="#0a0a0a" stroke-width="1" marker-end="url(#fc)"/>
+    <rect x="180" y="478" width="320" height="58" rx="3" fill="#f5f4f1" stroke="#0a0a0a" stroke-width="2"/>
+    <text x="340" y="499" text-anchor="middle" fill="#0a0a0a" font-size="11" font-weight="700" letter-spacing="2" font-family="'DM Sans',sans-serif">TRANSFORMATION</text>
+    <text x="340" y="521" text-anchor="middle" fill="#6b6763" font-size="10" font-family="'DM Sans',sans-serif">Builder → Student → Curator → Connector → Leader</text>
+    <line x1="340" y1="536" x2="340" y2="564" stroke="#0a0a0a" stroke-width="1.5" marker-end="url(#fc)"/>
+    <rect x="200" y="564" width="280" height="52" rx="3" fill="#f5f4f1" stroke="#0a0a0a" stroke-width="1.5"/>
+    <text x="340" y="584" text-anchor="middle" fill="#0a0a0a" font-size="11" font-weight="700" letter-spacing="2" font-family="'DM Sans',sans-serif">GRAVITY</text>
+    <text x="340" y="602" text-anchor="middle" fill="#6b6763" font-size="10" font-family="'DM Sans',sans-serif">Gather → Connect → Participate → Create Pull</text>
+    <line x1="340" y1="616" x2="340" y2="644" stroke="#0a0a0a" stroke-width="1.5" marker-end="url(#fc)"/>
+    <rect x="200" y="644" width="280" height="52" rx="3" fill="#f5f4f1" stroke="#0a0a0a" stroke-width="1.5"/>
+    <text x="340" y="664" text-anchor="middle" fill="#0a0a0a" font-size="11" font-weight="700" letter-spacing="2" font-family="'DM Sans',sans-serif">THE VILLAGE</text>
+    <text x="340" y="682" text-anchor="middle" fill="#6b6763" font-size="10" font-family="'DM Sans',sans-serif">People becoming. Not people arriving.</text>
+    <line x1="340" y1="696" x2="340" y2="724" stroke="#0a0a0a" stroke-width="1.5" marker-end="url(#fc)"/>
+    <rect x="430" y="644" width="196" height="52" rx="3" fill="none" stroke="#c8c5c0" stroke-width="1" stroke-dasharray="4,3"/>
+    <text x="528" y="664" text-anchor="middle" fill="#aaa" font-size="10" font-weight="600" letter-spacing="1" font-family="'DM Sans',sans-serif">nNOCENT BRIDGE</text>
+    <text x="528" y="682" text-anchor="middle" fill="#bbb" font-size="9" font-family="'DM Sans',sans-serif">Trust → Taste → Discovery</text>
+    <line x1="480" y1="670" x2="430" y2="670" stroke="#c8c5c0" stroke-width=".5" stroke-dasharray="3,3" marker-end="url(#fd)"/>
+    <rect x="200" y="724" width="280" height="52" rx="3" fill="#f5f4f1" stroke="#0a0a0a" stroke-width="1.5"/>
+    <text x="340" y="744" text-anchor="middle" fill="#0a0a0a" font-size="11" font-weight="700" letter-spacing="2" font-family="'DM Sans',sans-serif">ECOSYSTEM</text>
+    <text x="340" y="762" text-anchor="middle" fill="#6b6763" font-size="10" font-family="'DM Sans',sans-serif">Events · Relationships · Opportunities · Fan Forge</text>
+    <line x1="340" y1="776" x2="340" y2="804" stroke="#0a0a0a" stroke-width="1.5" marker-end="url(#fc)"/>
+    <rect x="185" y="804" width="310" height="60" rx="3" fill="#0a0a0a"/>
+    <text x="340" y="828" text-anchor="middle" fill="#fff" font-size="14" font-weight="700" letter-spacing="3" font-family="'DM Sans',sans-serif">OWNERSHIP</text>
+    <text x="340" y="849" text-anchor="middle" fill="#888" font-size="10" font-family="'DM Sans',sans-serif">Equity · IP · Cultural Capital · Long-Term Asset</text>
+  </svg>
+  <div class="copy-bar">
+    <span class="copy-text">© 2025 Craigstone Holdings · All Rights Reserved</span>
+    <span class="copy-text">Confidential · Do Not Distribute</span>
+  </div>
+  <div class="foot"><button class="fb" onclick="go(13)">← Back</button><span class="fp">15 / 15</span><button class="fb" onclick="go(0)">↩ Start Over</button></div>
+</div>
+
+</div>
+
+<script>
+const PW = 'onacero2025';
+function unlock() {
+  const val = document.getElementById('pw-input').value.trim().toLowerCase();
+  if (val === PW) {
+    document.getElementById('gate').style.display = 'none';
+    document.getElementById('deck-wrap').style.display = 'block';
+  } else {
+    const err = document.getElementById('pw-err');
+    err.textContent = 'Incorrect access code.';
+    document.getElementById('pw-input').value = '';
+    document.getElementById('pw-input').focus();
+    setTimeout(() => { err.textContent = ''; }, 3000);
+  }
+}
+const slides = document.querySelectorAll('.slide');
+const btns = document.querySelectorAll('.nb');
+let cur = 0;
+function go(n) {
+  slides[cur].classList.remove('on');
+  btns[cur].classList.remove('on');
+  cur = n;
+  slides[cur].classList.add('on');
+  btns[cur].classList.add('on');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
